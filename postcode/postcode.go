@@ -2,6 +2,7 @@ package postcode
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/previousdeveloper/postcodes-go-client/model"
 	"net/http"
 	"time"
@@ -10,6 +11,7 @@ import (
 type Client interface {
 	LookupPostcode(postCodeParam string) *model.PostCodeModel
 	BulkLookupPostcode(request *model.BulkPostCodeRequest) *model.BulkPostCodeResponse
+	GetNearestPostPostcode(longitude string, latitude string) *model.PostCodeModel
 }
 
 type postCodeClient struct {
@@ -29,6 +31,15 @@ func (p *postCodeClient) LookupPostcode(postCodeParam string) *model.PostCodeMod
 func (p *postCodeClient) BulkLookupPostcode(request *model.BulkPostCodeRequest) *model.BulkPostCodeResponse {
 	var postCode model.BulkPostCodeResponse
 	result := p.httpClientWrapper.Post(request)
+	if err := json.Unmarshal(result, &postCode); err != nil {
+		panic(err)
+	}
+	return &postCode
+}
+
+func (p *postCodeClient) GetNearestPostPostcode(longitude string, latitude string) *model.PostCodeModel {
+	var postCode model.PostCodeModel
+	result := p.httpClientWrapper.Get(fmt.Sprintf("?lon=%s&lat=%s", longitude, latitude))
 	if err := json.Unmarshal(result, &postCode); err != nil {
 		panic(err)
 	}
