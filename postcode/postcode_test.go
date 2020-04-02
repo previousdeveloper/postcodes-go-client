@@ -6,7 +6,7 @@ import mock "github.com/previousdeveloper/postcodes-go-client/mocks"
 
 //go:generate mockgen -destination=../mocks/mock-http-client-wrapper.go -source ../postcode/httpclient.go HttpClientWrapper
 
-func TestPostCodeClient_BulkLookupPostcode(t *testing.T) {
+func TestPostCodeClient_LookupPostcode(t *testing.T) {
 	t.Parallel()
 	mockCtrl := gomock.NewController(t)
 
