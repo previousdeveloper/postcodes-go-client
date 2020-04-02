@@ -1,6 +1,6 @@
 # postcodes-go-client
 
-=======================
+-------------
 
 Go library for interacting with the excellent [Postcodes.io][1] service.
 
