@@ -6,11 +6,14 @@ Go library for interacting with the excellent [Postcodes.io][1] service.
 
 ### Usage
 
+```go
+
     config := postcode.DefaultConfig()
     postCodeClient := postcode.NewPostCode(config)
     a := postCodeClient.BulkLookupPostcode(&model.BulkPostCodeRequest{Postcodes: []string{"OX49 5NU"}})
-	fmt.Println(a.Result[0].Result)
+    fmt.Println(a.Result[0].Result)
 
+```
 ----------
 
 Installation
