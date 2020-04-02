@@ -2,6 +2,7 @@
 
 
 ![Go Report Card](https://goreportcard.com/badge/github.com/previousdeveloper/postcodes-go-client)
+![Build](https://travis-ci.org/previousdeveloper/postcodes-go-client.svg?branch=master)
 -------------
 
 Go library for interacting with the excellent [Postcodes.io][1] service.
