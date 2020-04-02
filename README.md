@@ -8,18 +8,16 @@ Go library for interacting with the excellent [Postcodes.io][1] service.
 
 ```go
 
-    config := postcode.DefaultConfig()
-    postCodeClient := postcode.NewPostCode(config)
-    a := postCodeClient.BulkLookupPostcode(&model.BulkPostCodeRequest{Postcodes: []string{"OX49 5NU"}})
-    fmt.Println(a.Result[0].Result)
+config := postcode.DefaultConfig()
+postCodeClient := postcode.NewPostCode(config)
+a := postCodeClient.BulkLookupPostcode(&model.BulkPostCodeRequest{Postcodes: []string{"OX49 5NU"}})
+fmt.Println(a.Result[0].Result)
 
 ```
 ----------
 
 Installation
 -------------
-
-After installing, you can use `go doc` to get documentation:
 
 ```bash
 go get github.com/previousdeveloper/postcodes-go-client
