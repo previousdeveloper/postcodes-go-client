@@ -16,13 +16,12 @@ type Client interface {
 }
 
 type postCodeClient struct {
-	Config            *configuration
-	httpClientWrapper HttpClientWrapper
+	Config *configuration
 }
 
 func (p *postCodeClient) LookupPostcode(postCodeParam string) *model.PostCodeModel {
 	var postCode model.PostCodeModel
-	result := p.httpClientWrapper.Get(postCodeParam)
+	result := p.Config.HttpClientWrapper.Get(postCodeParam)
 	if err := json.Unmarshal(result, &postCode); err != nil {
 		panic(err)
 	}
@@ -31,7 +30,7 @@ func (p *postCodeClient) LookupPostcode(postCodeParam string) *model.PostCodeMod
 
 func (p *postCodeClient) BulkLookupPostcode(request *model.BulkPostCodeRequest) *model.BulkPostCodeResponse {
 	var postCode model.BulkPostCodeResponse
-	result := p.httpClientWrapper.Post(request)
+	result := p.Config.HttpClientWrapper.Post(request)
 	if err := json.Unmarshal(result, &postCode); err != nil {
 		panic(err)
 	}
@@ -40,7 +39,7 @@ func (p *postCodeClient) BulkLookupPostcode(request *model.BulkPostCodeRequest) 
 
 func (p *postCodeClient) GetNearestPostPostcode(longitude string, latitude string) *model.PostCodeModel {
 	var postCode model.PostCodeModel
-	result := p.httpClientWrapper.Get(fmt.Sprintf("?lon=%s&lat=%s", longitude, latitude))
+	result := p.Config.HttpClientWrapper.Get(fmt.Sprintf("?lon=%s&lat=%s", longitude, latitude))
 	if err := json.Unmarshal(result, &postCode); err != nil {
 		panic(err)
 	}
@@ -49,7 +48,7 @@ func (p *postCodeClient) GetNearestPostPostcode(longitude string, latitude strin
 
 func (p *postCodeClient) BulkReverseGeocoding(request *model.BulkReverseGeocodingRequest) *model.PostCodeModel {
 	var postCode model.PostCodeModel
-	result := p.httpClientWrapper.Post(request)
+	result := p.Config.HttpClientWrapper.Post(request)
 	if err := json.Unmarshal(result, &postCode); err != nil {
 		panic(err)
 	}
@@ -57,7 +56,7 @@ func (p *postCodeClient) BulkReverseGeocoding(request *model.BulkReverseGeocodin
 }
 
 func NewPostCode(config *configuration) Client {
-	return &postCodeClient{Config: config, httpClientWrapper: config.HttpClientWrapper}
+	return &postCodeClient{Config: config}
 }
 
 type configuration struct {
@@ -74,5 +73,5 @@ func DefaultConfig() *configuration {
 }
 
 func defaultConfig(transportFn func() *http.Transport) *configuration {
-	return &configuration{BaseUrl: "api.postcodes.io/", Timeout: 3 * time.Second, Transport: transportFn(), HttpClientWrapper: newHttpClientWrapper(DefaultConfig())}
+	return &configuration{BaseUrl: "api.postcodes.io/", HttpClientWrapper: newHttpClientWrapper(transportFn(), 3*time.Second)}
 }
