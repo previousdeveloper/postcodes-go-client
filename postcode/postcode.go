@@ -12,6 +12,7 @@ type Client interface {
 	LookupPostcode(postCodeParam string) *model.PostCodeModel
 	BulkLookupPostcode(request *model.BulkPostCodeRequest) *model.BulkPostCodeResponse
 	GetNearestPostPostcode(longitude string, latitude string) *model.PostCodeModel
+	BulkReverseGeocoding(request *model.BulkReverseGeocodingRequest) *model.PostCodeModel
 }
 
 type postCodeClient struct {
@@ -46,14 +47,24 @@ func (p *postCodeClient) GetNearestPostPostcode(longitude string, latitude strin
 	return &postCode
 }
 
+func (p *postCodeClient) BulkReverseGeocoding(request *model.BulkReverseGeocodingRequest) *model.PostCodeModel {
+	var postCode model.PostCodeModel
+	result := p.httpClientWrapper.Post(request)
+	if err := json.Unmarshal(result, &postCode); err != nil {
+		panic(err)
+	}
+	return &postCode
+}
+
 func NewPostCode(config *configuration) Client {
-	return &postCodeClient{Config: config, httpClientWrapper: newHttpClientWrapper(config.Transport, config.Timeout)}
+	return &postCodeClient{Config: config, httpClientWrapper: config.HttpClientWrapper}
 }
 
 type configuration struct {
-	BaseUrl   string
-	Timeout   time.Duration
-	Transport *http.Transport
+	BaseUrl           string
+	Timeout           time.Duration
+	Transport         *http.Transport
+	HttpClientWrapper HttpClientWrapper
 }
 
 func DefaultConfig() *configuration {
@@ -63,5 +74,5 @@ func DefaultConfig() *configuration {
 }
 
 func defaultConfig(transportFn func() *http.Transport) *configuration {
-	return &configuration{BaseUrl: "api.postcodes.io/", Timeout: 3 * time.Second, Transport: transportFn()}
+	return &configuration{BaseUrl: "api.postcodes.io/", Timeout: 3 * time.Second, Transport: transportFn(), HttpClientWrapper: newHttpClientWrapper(DefaultConfig())}
 }

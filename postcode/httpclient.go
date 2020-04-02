@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
+
 
 type HttpClientWrapper interface {
 	Get(path string) []byte
@@ -59,6 +59,6 @@ func (wrapper *httpClientWrapper) Post(param interface{}) []byte {
 	return body
 }
 
-func newHttpClientWrapper(transport *http.Transport, timeout time.Duration) HttpClientWrapper {
-	return &httpClientWrapper{BaseUrl: "http://api.postcodes.io/", Http: &http.Client{Timeout: timeout, Transport: transport}}
+func newHttpClientWrapper(config *configuration) HttpClientWrapper {
+	return &httpClientWrapper{BaseUrl: "http://api.postcodes.io/", Http: &http.Client{Timeout: config.Timeout, Transport: config.Transport}}
 }
