@@ -10,16 +10,32 @@ func TestPostCodeClient_LookupPostcode(t *testing.T) {
 	t.Parallel()
 	mockCtrl := gomock.NewController(t)
 
-	mockCouchbaseClient := mock.NewMockHttpClientWrapper(mockCtrl)
+	mockHttpClientWrapper := mock.NewMockHttpClientWrapper(mockCtrl)
 
 	text := "{\"status\": 200}"
 	bytes := []byte(text)
-	mockCouchbaseClient.EXPECT().Get("postCode").Return(bytes)
-	configuration := &configuration{HttpClientWrapper: mockCouchbaseClient}
+	mockHttpClientWrapper.EXPECT().Get("postCode").Return(bytes)
+	configuration := &configuration{HttpClientWrapper: mockHttpClientWrapper}
 	newPostCode := NewPostCode(configuration)
 	postcodeResult := newPostCode.LookupPostcode("postCode")
 
 	if postcodeResult.Status != 200 {
+		t.Error("er")
+	}
+}
+
+func TestPostCodeClient_Bla(t *testing.T) {
+	t.Parallel()
+	mockCtrl := gomock.NewController(t)
+	mockHttpClientWrapper := mock.NewMockHttpClientWrapper(mockCtrl)
+	text := "{\"status\": 200}"
+	bytes := []byte(text)
+	mockHttpClientWrapper.EXPECT().Get("?lon=a&lat=b").Return(bytes)
+	configuration := &configuration{HttpClientWrapper: mockHttpClientWrapper}
+	newPostCode := NewPostCode(configuration)
+	result := newPostCode.GetNearestPostPostcode("a", "b")
+
+	if result.Status != 200 {
 		t.Error("er")
 	}
 }
