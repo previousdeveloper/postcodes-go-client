@@ -2,10 +2,11 @@ language: go
 go:
   - 1.x
 install:
-  - go get -u github.com/mattn/goveralls
+  - go get -u github.com/mattn/goveralls                    # only for coveralls.io
+  - go get -u github.com/dave/courtney
   - go get -t -v ./...
 script:
   - courtney -e -v
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
-  - goveralls -coverprofile=coverage.out -service=travis-ci
+  - bash <(curl -s https://codecov.io/bash)                 # only for codecov.io
+  - goveralls -coverprofile=coverage.out -service=travis-ci # only for coveralls.io
